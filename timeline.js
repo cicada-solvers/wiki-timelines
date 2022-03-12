@@ -96,13 +96,33 @@ class Timeline {
           continue;
 
         let is_one_dragged = Array.from(group_names.children).some(e => e.classList.contains('vis-group-is-dragging'));
-        console.log(is_one_dragged);
         group_names.style.cursor = is_one_dragged ? "grabbing" : "pointer";
       }
     });
     observer.observe(group_names, {
       attributes: true,
       subtree: true
+    });
+
+
+    // When a line/dot is clicked, select its associated item
+    // Note: this code is hacking into vis-timeline's internals. If more hacks are needed, directly editing the library could be simpler and cleaner
+    this.timeline.itemSet.body.emitter.on('_change', ev => {
+      for (let item of Object.values(this.timeline.itemSet.items)) {
+        const clickCallback = ev => {
+          let selection = [item.id];
+
+          if (ev.ctrlKey || ev.metaKey || ev.shiftKey)
+            selection = selection.concat(this.timeline.getSelection());
+
+          // TODO: trully support Shift+Click
+
+          this.timeline.setSelection(selection);
+        }
+
+        if (item.dom && item.dom.dot) item.dom.dot.addEventListener('pointerdown', clickCallback);
+        if (item.dom && item.dom.line) item.dom.line.addEventListener('pointerdown', clickCallback);
+      }
     });
   }
 
