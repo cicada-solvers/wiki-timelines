@@ -1,0 +1,165 @@
+/* Theme variables */
+:root {
+  --footer-height: 200px;
+
+  --link-color: #534b5e;
+
+  --theme-gray-darkest: #161616;
+  --theme-gray-dark: #1c1c1c;
+  --theme-gray-normal: ;
+  --theme-gray-light: #9f9f9f;
+  --theme-gray-lightest: #eeeeee;
+
+  --theme-main-blue: rgb(29, 87, 251);
+  --theme-dark-blue: rgb(6, 54, 189);
+
+  --theme-main-red: #ff3535;
+
+  --theme-main-orange: #ff8300;
+  --theme-dark-orange: #e66100;
+}
+
+* {
+  color: var(--theme-gray-lightest);
+  font: 1em "Rubik";
+}
+
+body {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  
+  height: 100%;
+  width: 100%;
+
+  margin: 0px;
+
+  background-color: var(--theme-gray-dark);
+}
+
+a {
+   color: var(--link-color);
+}
+
+main {
+  height: calc(100% - var(--footer-height));
+}
+
+footer {
+  position: relative;
+  width: 100%;
+  height: var(--footer-height);
+
+  user-select: none;
+
+  background-color: var(--theme-gray-darkest);
+}
+
+#project-name {
+  font-size: xxx-large;
+  padding: 10px;
+}
+
+#project-about {
+  position: absolute;
+  bottom: 0;
+
+  padding: 10px 5px 10px 5px;
+}
+#project-about > * {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+#project-about > :not(:last-child) {
+  border: solid var(--theme-gray-lightest);
+  border-width: 0px 1.5px 0px 0px;
+}
+
+#controls {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap-reverse;
+
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+
+  padding: 5px 10px 5px 0px;
+}
+#controls > * {
+  margin: 5px;
+}
+
+.dataset-header {}
+.dataset-name {}
+.dataset-description {
+  color: var(--theme-gray-light);
+  font-size: x-small;
+}
+
+button {
+  border: solid var(--theme-gray-light);
+
+  background-color: var(--theme-gray-lightest);
+  color: var(--theme-gray-dark);
+
+  padding: 5px 10px 5px 10px;
+
+  cursor: pointer;
+}
+button:hover {
+  background-color: var(--theme-gray-light);
+}
+button:active {
+  background-color: var(--theme-gray-lightest), 0.2;
+}
+
+.vis-item {
+  /* Display items over lines */
+  z-index: 0;
+
+  border-color: var(--theme-dark-blue);
+  background-color: var(--theme-main-blue);
+
+/* Gray theme:
+  border-color: rgb(55, 55, 55);
+  background-color: rgb(88, 88, 88); */
+}
+.vis-item.vis-selected {
+  border-color: var(--theme-dark-orange) !important;
+  background-color: var(--theme-main-orange);
+}
+.vis-item.vis-dot, .vis-item.vis-line {
+  /* Display lines behind items & selected lines */
+  z-index: -2;
+
+  border-color: var(--theme-main-blue);
+
+/* Gray theme:
+  border-color: rgb(145, 145, 145); */
+}
+.vis-item.vis-dot.vis-selected, .vis-item.vis-line.vis-selected {
+  /* Display lines behind items but over unselected lines */
+  z-index: -1;
+}
+
+.vis-time-axis.vis-text {
+  color: var(--theme-gray-light);
+}
+
+/* Group re-ordering */
+.vis-group-is-dragging {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+.vis-label.draggable {
+  cursor: inherit !important;
+}
+
+.vis-current-time {
+  background-color: var(--theme-main-red);
+}
+
+.vis-inner {
+  max-width: 250px;
+}
