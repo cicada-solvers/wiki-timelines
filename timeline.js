@@ -145,6 +145,9 @@ setTimeout(() => {
   for (let i = 0; i < 1; i++)
     data_source.load("r/a2e7j6ic78h0j posts");
 }, 1000);
+setTimeout(() => {
+  timeline.fit();
+}, 1500);
 
 // Controls
 document.getElementById("controls-center").addEventListener('click', ev => {
