@@ -25,21 +25,27 @@ class DataSource {
   load(dataset_name) {
     let dataset = this.datasets.get(dataset_name);
 
-    fetch(`./data/${dataset.filename}`)
+    if (!dataset) return;
+
+    return fetch(`./data/${dataset.filename}`)
     .then(response => response.json())
     .then(data => {
-      window.timeline.add_group(dataset.name, data, dataset.description);
+      timeline.add_group(dataset.name, data, dataset.description);
     })
   }
 }
 
 class Timeline {
   constructor() {
+    this.container = null;
+
     this.items = new vis.DataSet();
     this.groups = new vis.DataSet();
 
     this.item_counter = 1;
     this.group_counter = 1;
+
+    this.loading = false;
   }
 
   init() {
@@ -92,9 +98,8 @@ class Timeline {
       moment: date => vis.moment(date).utc() // Display UTC time
     };
 
-    let container = document.getElementById('timeline');
+    let container = this.container = document.getElementById('timeline');
     this.timeline = new vis.Timeline(container, this.items, this.groups, options);
-
 
     // When dragging an item, use the "grabbing" cursor
     let group_names = container.getElementsByClassName('vis-labelset')[0];
@@ -139,6 +144,13 @@ class Timeline {
     this.timeline.fit();
   }
 
+  set_loading(state) {
+    this.loading = state;
+
+    let main_element = this.container.parentElement;
+    main_element.classList.toggle("loading", state);
+  }
+
   add_group(name, data, description) {
     let group_id = this.group_counter++;
 
@@ -170,20 +182,33 @@ var data_source = window.data_source = new DataSource();
 timeline.init();
 data_source.init();
 
-setTimeout(() => {
-  for (let i = 0; i < 1; i++)
-    data_source.load("r/a2e7j6ic78h0j posts");
-}, 1000);
-setTimeout(() => {
+setTimeout(async () => {
+  for (let i = 0; i < 1; i++) {
+    timeline.set_loading(true);
+    await data_source.load("r/a2e7j6ic78h0j posts");
+    timeline.set_loading(false);
+  }
+
   timeline.fit();
-}, 1500);
+}, 1000);
 
 // Controls
-document.getElementById("controls-center").addEventListener('click', ev => {
+const setup_control = (id, callback) => document.getElementById(id)?.addEventListener('click', callback);
+
+setup_control("controls-center", ev => {
   timeline.fit();
 });
-document.getElementById("controls-permalink").addEventListener('click', ev => {
+setup_control("controls-permalink", ev => {
   navigator.clipboard.writeText(location.href);
 
   // TODO: "Copied!" message
+});
+setup_control("controls-load", async ev => {
+  let dataset_name = window.prompt("Dataset name:"); // TODO
+
+  timeline.set_loading(true);
+  await data_source.load(dataset_name);
+  timeline.set_loading(false);
+
+  timeline.fit();
 });

@@ -43,7 +43,30 @@ a {
 }
 
 main {
+  position: relative;
   height: calc(100% - var(--footer-height));
+}
+main > #timeline {
+  height: 100%;
+}
+main.loading > #timeline {
+  cursor: wait !important;
+  filter: blur(2px);
+}
+main.loading > #timeline > * {
+  pointer-events: none;
+}
+#timeline-loading {
+  display: none;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+
+  font-size: 2em;
+}
+main.loading > #timeline-loading {
+  display: block;
 }
 
 footer {
