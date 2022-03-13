@@ -13,7 +13,8 @@
   --theme-main-blue: rgb(29, 87, 251);
   --theme-dark-blue: rgb(6, 54, 189);
 
-  --theme-main-red: #ff3535;
+  --theme-main-red: #ff0e0e;
+  --theme-dark-red: #ff3535;
 
   --theme-main-orange: #ff8300;
   --theme-dark-orange: #e66100;
@@ -91,11 +92,57 @@ footer {
   margin: 5px;
 }
 
-.dataset-header {}
+.dataset-header {
+  position: relative;
+}
 .dataset-name {}
 .dataset-description {
   color: var(--theme-gray-light);
   font-size: x-small;
+}
+.dataset-delete:hover {
+  opacity: 1;
+}
+.dataset-delete {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: 14px;
+  height: 14px;
+
+  opacity: 0.2;
+  transition: opacity 0.2s ease-in;
+
+  background-color: var(--theme-main-red);
+  border: solid var(--theme-main-red);
+  border-radius: 4px;
+}
+.dataset-delete:before {
+  position: absolute;
+  left: 6px;
+  top: -1.5px;
+
+  background-color: var(--theme-gray-lightest);
+  width: 1.5px;
+  height: 16px;
+
+  content: " ";
+
+  transform: rotate(45deg);
+}
+.dataset-delete:after {
+  position: absolute;
+  left: 6px;
+  top: -1.5px;
+
+  background-color: var(--theme-gray-lightest);
+  width: 1.5px;
+  height: 16px;
+
+  content: " ";
+
+  transform: rotate(-45deg);
 }
 
 button {
@@ -109,10 +156,10 @@ button {
   cursor: pointer;
 }
 button:hover {
-  background-color: var(--theme-gray-light);
+  background-image: linear-gradient(rgba(0, 0, 0, 0.15) 0 0);
 }
 button:active {
-  background-color: var(--theme-gray-lightest), 0.2;
+  background-image: linear-gradient(rgba(0, 0, 0, 0.25) 0 0);
 }
 
 .vis-item {
@@ -157,7 +204,7 @@ button:active {
 }
 
 .vis-current-time {
-  background-color: var(--theme-main-red);
+  background-color: var(--theme-dark-red);
 }
 
 .vis-inner {

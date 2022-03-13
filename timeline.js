@@ -43,6 +43,8 @@ class Timeline {
   }
 
   init() {
+    let self = this;
+
     // Configuration for the timeline
     let options = {
       multiselect: true, // Allow multiple selection with Ctrl+Click
@@ -72,8 +74,15 @@ class Timeline {
         description.innerText = group.description;
         description.classList.add('dataset-description');
 
+        let delete_action = document.createElement("div");
+        delete_action.classList.add('dataset-delete');
+        delete_action.addEventListener('click', ev => {
+          self.groups.remove(group.id);
+        });
+
         group_element.appendChild(name);
         group_element.appendChild(description);
+        group_element.appendChild(delete_action);
 
         return group_element;
       },
