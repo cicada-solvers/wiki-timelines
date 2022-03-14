@@ -5,33 +5,24 @@ class DataSource {
   }
 
   // Initializes the DataSource: reads available data sets.
-  init() {
-    let self = this;
+  async init() {
+    let response = await fetch('./data/index.json')
+    let json = await response.json();
 
-    fetch('./data/index.json')
-    .then(response => response.json())
-    .then(json => {
-      self.datasets = new vis.DataSet(json, {
-        fieldId: "name"
-      });
-    })
-
-    .catch(error => {
-      // TODO: error message
-      console.log(error)
+    this.datasets = new vis.DataSet(json, {
+      fieldId: "name"
     });
   }
 
-  load(dataset_name) {
+  async load(dataset_name) {
     let dataset = this.datasets.get(dataset_name);
 
     if (!dataset) return;
 
-    return fetch(`./data/${dataset.filename}`)
-    .then(response => response.json())
-    .then(data => {
-      timeline.add_group(dataset.name, data, dataset.description);
-    })
+    let response = await fetch(`./data/${dataset.filename}`)
+    let data = await response.json();
+
+    timeline.add_group(dataset.name, data, dataset.description);
   }
 }
 
@@ -49,8 +40,6 @@ class Timeline {
   }
 
   init() {
-    let self = this;
-
     // Configuration for the timeline
     let options = {
       multiselect: true, // Allow multiple selection with Ctrl+Click
@@ -60,8 +49,11 @@ class Timeline {
       stackSubgroups: true,
 
       // Enable changing group order by dragging them
+      groupOrder: (a, b) => a.order - b.order,
       groupOrderSwap: (a, b, groups) => {
-        [a.order, b.order] = [b.order, a.order]
+        [a.order, b.order] = [b.order, a.order];
+
+        app.update_url();
       },
       groupEditable: true,
 
@@ -83,7 +75,9 @@ class Timeline {
         let delete_action = document.createElement("div");
         delete_action.classList.add('dataset-delete');
         delete_action.addEventListener('click', ev => {
-          self.groups.remove(group.id);
+          this.groups.remove(group.id);
+
+          app.update_url();
         });
 
         group_element.appendChild(name);
@@ -176,39 +170,95 @@ class Timeline {
   }
 }
 
-var timeline = window.timeline = new Timeline();
-var data_source = window.data_source = new DataSource();
+class App {
+  constructor() {
+    this.timeline = new Timeline();
+    this.data_source = new DataSource();
 
-timeline.init();
-data_source.init();
-
-setTimeout(async () => {
-  for (let i = 0; i < 1; i++) {
-    timeline.set_loading(true);
-    await data_source.load("r/a2e7j6ic78h0j posts");
-    timeline.set_loading(false);
+    window.timeline = this.timeline;
+    window.data_source = this.data_source;
   }
 
-  timeline.fit();
-}, 1000);
+  async init() {
+    this.init_controls();
 
-// Controls
-const setup_control = (id, callback) => document.getElementById(id)?.addEventListener('click', callback);
+    // Create timeline
+    this.timeline.init();
+    this.timeline.set_loading(true);
 
-setup_control("controls-center", ev => {
-  timeline.fit();
-});
-setup_control("controls-permalink", ev => {
-  navigator.clipboard.writeText(location.href);
+    // Import dataset information
+    await this.data_source.init();
 
-  // TODO: "Copied!" message
-});
-setup_control("controls-load", async ev => {
-  let dataset_name = window.prompt("Dataset name:"); // TODO
+    // Permalink parsing
+    if (location.hash.length > 1) {
+      let packed_content = location.hash.substr(1);
 
-  timeline.set_loading(true);
-  await data_source.load(dataset_name);
-  timeline.set_loading(false);
+      await this.restore_state(packed_content);
+    }
+    this.update_url();
 
-  timeline.fit();
-});
+    // Enable timeline
+    this.timeline.set_loading(false);
+    this.timeline.fit();
+  }
+  init_controls() {
+    const setup_control = (id, callback) => document.getElementById(id)?.addEventListener('click', callback);
+
+    setup_control("controls-center", ev => {
+      this.timeline.fit();
+    });
+    setup_control("controls-permalink", ev => {
+      navigator.clipboard.writeText(location.href);
+
+      // TODO: "Copied!" message
+    });
+    setup_control("controls-load", async ev => {
+      let dataset_name = window.prompt("Dataset name:"); // TODO
+
+      this.timeline.set_loading(true);
+      await this.load(dataset_name);
+      this.update_url();
+      this.timeline.set_loading(false);
+
+      this.timeline.fit();
+    });
+  }
+
+  // Load new dataset
+  async load(name) {
+    this.timeline.set_loading(true);
+
+    await this.data_source.load(name);
+
+    this.timeline.set_loading(false);
+  }
+
+  // Restore timeline state/content
+  async restore_state(packed_content) {
+    let to_load = [];
+
+    for (let packed_dataset_name of packed_content.split(';'))
+      try {
+        to_load.push(decodeURIComponent(packed_dataset_name));
+      } catch (e) {}
+
+    let promises = [];
+    for (let name of to_load) {
+      let load_promise = this.data_source.load(name);
+
+      promises.push(load_promise);
+    }
+
+    await Promise.all(promises);
+  }
+  update_url() {
+    let sorted = this.timeline.groups
+    .map(group => group, { order: 'order' }) // Sort by field 'order'
+    .map(group => group.content);
+
+    location.hash = sorted.map(encodeURIComponent).join(';');
+  }
+}
+
+let app = new App();
+app.init();
