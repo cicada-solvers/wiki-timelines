@@ -58,15 +58,16 @@ main.loading > #timeline > * {
 }
 #timeline-loading {
   display: none;
+  justify-content: center;
+  width: 100%;
 
   position: absolute;
   top: 50%;
-  left: 50%;
 
   font-size: 2em;
 }
 main.loading > #timeline-loading {
-  display: block;
+  display: flex;
 }
 
 footer {
