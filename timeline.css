@@ -169,25 +169,25 @@ footer {
   transform: rotate(-45deg);
 }
 
-.item {
+.event-dropup {
   position: relative;
 }
-.item-dropup {
+.event-dropup-container {
   display: none;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 
   position: absolute;
-  top: -120px;
+  bottom: 5px;
   width: 100%;
 
   pointer-events: none;
 }
-.item-show-dropup > .item-dropup {
+.event-dropup-shown > .event-dropup-container {
   display: flex;
 }
-.item-dropup-content {
+.event-dropup-content {
   padding: 20px 30px 20px 30px;
 
   background-color: var(--theme-gray-darkest);
@@ -195,7 +195,7 @@ footer {
 
   pointer-events: auto;
 }
-.item-dropup-connector {
+.event-dropup-connector {
   width: 0px;
   height: 35px;
 

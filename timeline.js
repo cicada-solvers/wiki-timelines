@@ -103,13 +103,19 @@ class Timeline {
       },
 
       template: item => {
-        let title = document.createTextNode(item['content']);
-
-        let dropup = document.createElement('div');
-        dropup.classList.add('item-dropup');
-
-        let dropup_connector = document.createElement('div');
-        dropup_connector.classList.add('item-dropup-connector');
+        /*
+         *  <div class="event">
+         *    <div class="event-dropup">
+         *      <div class="event-dropup-container">
+         *        <div class="event-dropup-content">Author: ..., Link...</div>
+         *        <div class="event-dropup-connector"></div>
+         *      </div>
+         *    </div>
+         *    <div "event-content">
+         *      Title...
+         *    </div>
+         *  </div>
+         */
 
         // "More information" section
         let content = document.createElement('div');
@@ -119,7 +125,7 @@ class Timeline {
         else // Hide
           content.style.display = 'none';
 
-        content.classList.add('item-dropup-content');
+        content.classList.add('event-dropup-content');
         content.addEventListener('pointerdown', e => {
           // This pointer event would normaly bubble to the timeline main element, where
           //  it would be caught by the library and interpreted as "the item was selected".
@@ -131,11 +137,22 @@ class Timeline {
           e.stopPropagation();
         }, true);
 
-        dropup.appendChild(content);
-        dropup.appendChild(dropup_connector);
+        let dropup_connector = document.createElement('div');
+        dropup_connector.classList.add('event-dropup-connector');
+
+        let dropup_container = document.createElement('div');
+        dropup_container.classList.add('event-dropup-container');
+        dropup_container.appendChild(content);
+        dropup_container.appendChild(dropup_connector);
+
+        let dropup = document.createElement('div');
+        dropup.classList.add('event-dropup');
+        dropup.appendChild(dropup_container);
+
+        let title = document.createTextNode(item['content']);
 
         let element = document.createElement('div');
-        element.classList.add('item');
+        element.classList.add('event');
         element.appendChild(dropup);
         element.appendChild(title);
 
@@ -186,9 +203,9 @@ class Timeline {
       let should_show = item => this.events_selected.length == 1 && item.id == this.events_selected[0];
 
       for (let item of Object.values(this.timeline.itemSet.items)) {
-        let content = item.dom.content.firstChild;
+        let dropup = item.dom.content.firstChild.firstChild;
 
-        content.classList.toggle('item-show-dropup', should_show(item));
+        dropup.classList.toggle('event-dropup-shown', should_show(item));
       }
     };
 
