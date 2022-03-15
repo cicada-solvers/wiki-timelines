@@ -22,9 +22,29 @@ class DataSource {
     let response = await fetch(`./data/${dataset.filename}`)
     let data = await response.json();
 
+    // Load templating code
+    let templates = {
+      title: (event, element) => {
+        return event['title'];
+      },
+      more_information: (event, element) => {
+        return null;
+      }
+    };
+
+    try {
+      let imported_templates = await import('./data/' + data.templating_script);
+
+      if ('title' in imported_templates)
+        templates['title'] = imported_templates['title'];
+      if ('information' in imported_templates)
+        templates['information'] = imported_templates['information'];
+    } catch (e) {}
+
     timeline.add_group({
       name: dataset.name,
-      description: dataset.description
+      description: dataset.description,
+      templates: templates
     }, data);
   }
 }
@@ -103,6 +123,28 @@ class Timeline {
       },
 
       template: item => {
+        let group = this.groups.get(item.group)
+        let dataset_templates = group.metadata.templates;
+
+        const to_unix_time = date => date.getTime() / 1000;
+        let original_event = {
+          title: item['content'],
+          time: 'end' in item ? [to_unix_time(item['start']), to_unix_time(item['end'])] : to_unix_time(item['start']),
+          category: item['subgroup'],
+          data: item['information']
+        };
+
+        // Template helper - return 'true' when the template-specific behaviour shouldn't be run.
+        const apply_template = (output, element) => {
+          if (output === null)
+            return false;
+
+          if (typeof output == "string")
+            output = document.createTextNode(output);
+          element.appendChild(output);
+          return true;
+        };
+
         /*
          *  <div class="event">
          *    <div class="event-dropup">
@@ -118,12 +160,12 @@ class Timeline {
          */
 
         // "More information" section
+        let dropup_container = document.createElement('div');
         let content = document.createElement('div');
 
-        if (item.information_template)
-          item.information_template(item, content)
-        else // Hide
-          content.style.display = 'none';
+        let more_information = dataset_templates.more_information(original_event, content);
+        if (!apply_template(more_information, content))
+          dropup_container.style.display = 'none';
 
         content.classList.add('event-dropup-content');
         content.addEventListener('pointerdown', e => {
@@ -140,7 +182,6 @@ class Timeline {
         let dropup_connector = document.createElement('div');
         dropup_connector.classList.add('event-dropup-connector');
 
-        let dropup_container = document.createElement('div');
         dropup_container.classList.add('event-dropup-container');
         dropup_container.appendChild(content);
         dropup_container.appendChild(dropup_connector);
@@ -149,12 +190,13 @@ class Timeline {
         dropup.classList.add('event-dropup');
         dropup.appendChild(dropup_container);
 
-        let title = document.createTextNode(item['content']);
-
         let element = document.createElement('div');
         element.classList.add('event');
         element.appendChild(dropup);
-        element.appendChild(title);
+
+        // Generate title using template
+        let title = dataset_templates.title(original_event, element);
+        apply_template(title, element);
 
         return element;
       },
@@ -272,13 +314,13 @@ class Timeline {
         group: group_id,
 
         content: d['title'],
-        information: d["data"],
+        information: d['data'],
 
-        information_template: (item, content) => {
+        more_information: (event, content) => {
           const text = txt => document.createTextNode(txt);
           const newline = document.createElement('br');
 
-          let info = item.information;
+          let info = event.data;
 
           if (info.distinguished)
             content.appendChild(text(`Author: ${info.author} (as a moderator)`));
