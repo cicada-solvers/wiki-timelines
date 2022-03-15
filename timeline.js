@@ -37,8 +37,8 @@ class DataSource {
 
       if ('title' in imported_templates)
         templates['title'] = imported_templates['title'];
-      if ('information' in imported_templates)
-        templates['information'] = imported_templates['information'];
+      if ('more_information' in imported_templates)
+        templates['more_information'] = imported_templates['more_information'];
     } catch (e) {}
 
     timeline.add_group({
@@ -139,9 +139,11 @@ class Timeline {
           if (output === null)
             return false;
 
-          if (typeof output == "string")
-            output = document.createTextNode(output);
-          element.appendChild(output);
+          if (output !== undefined) {
+            if (typeof output == "string")
+              output = document.createTextNode(output);
+            element.appendChild(output);
+          }
           return true;
         };
 
