@@ -33,7 +33,7 @@ class DataSource {
     };
 
     try {
-      let imported_templates = await import('./data/' + data.templating_script);
+      let imported_templates = await import('./data/' + dataset.templating_script);
 
       if ('title' in imported_templates)
         templates['title'] = imported_templates['title'];
