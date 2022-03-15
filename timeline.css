@@ -168,6 +168,32 @@ footer {
   transform: rotate(-45deg);
 }
 
+.item {
+  position: relative;
+}
+.item-dropup {
+  display: none;
+  justify-content: center;
+
+  position: absolute;
+  top: -100px;
+  width: 100%;
+
+  pointer-events: none;
+}
+.item-show-dropup > .item-dropup {
+  display: flex;
+}
+.item-dropup-content {
+  padding: 20px 30px 20px 30px;
+
+  background-color: var(--theme-gray-darkest);
+  border: solid var(--theme-gray-lightest) 1.5px;
+  border-radius: 10px;
+
+  pointer-events: auto;
+}
+
 button {
   border: solid var(--theme-gray-light);
 

@@ -22,7 +22,10 @@ class DataSource {
     let response = await fetch(`./data/${dataset.filename}`)
     let data = await response.json();
 
-    timeline.add_group(dataset.name, data, dataset.description);
+    timeline.add_group({
+      name: dataset.name,
+      description: dataset.description
+    }, data);
   }
 }
 
@@ -37,6 +40,8 @@ class Timeline {
     this.group_counter = 1;
 
     this.loading = false;
+
+    this.events_selected = [];
   }
 
   init() {
@@ -64,18 +69,28 @@ class Timeline {
         let group_element = document.createElement("div");
         group_element.classList.add('dataset-header');
 
+        let info = group.metadata;
+
         let name = document.createElement("span");
-        name.innerText = group.content;
+        name.innerText = info.name;
         name.classList.add('dataset-name');
 
         let description = document.createElement("div");
-        description.innerText = group.description;
+        description.innerText = info.description;
         description.classList.add('dataset-description');
 
         let delete_action = document.createElement("div");
         delete_action.classList.add('dataset-delete');
         delete_action.addEventListener('click', ev => {
           this.groups.remove(group.id);
+
+          // Removing associated items
+          let to_remove = [];
+          this.items.forEach(item => {
+            if (item.group == group.id)
+              to_remove.push(item.id);
+          });
+          this.items.remove(to_remove);
 
           app.update_url();
         });
@@ -85,6 +100,41 @@ class Timeline {
         group_element.appendChild(delete_action);
 
         return group_element;
+      },
+
+      template: item => {
+        let title = document.createTextNode(item['content']);
+
+        let dropup = document.createElement('div');
+        dropup.classList.add('item-dropup');
+
+        // "More information" section
+        let content = document.createElement('div');
+
+        if (item.information_template)
+          item.information_template(item, content)
+        else // Hide
+          content.style.display = 'none';
+
+        content.classList.add('item-dropup-content');
+        content.addEventListener('pointerdown', e => {
+          // This pointer event would normaly bubble to the timeline main element, where
+          //  it would be caught by the library and interpreted as "the item was selected".
+          // This would cause the item DOM to be "redraw" (= deleted and recreated),
+          //  causing some unwanted behaviors (such as preventing clicking on <a> elements).
+          //
+          // The solution is to stop the element propagation default the visjs callback is ran.
+          // Since it was added earlier, we setup this callback to run during the capture phase.
+          e.stopPropagation();
+        }, true);
+        dropup.appendChild(content);
+
+        let element = document.createElement('div');
+        element.classList.add('item');
+        element.appendChild(dropup);
+        element.appendChild(title);
+
+        return element;
       },
 
       height: "100%",
@@ -113,6 +163,33 @@ class Timeline {
     });
 
 
+    // Handle dropup display
+    const handle_dropups = selection => {
+      for (let item of selection) {
+        if (!this.events_selected.includes(item))
+          // Newly selected item
+          this.events_selected.push(item);
+      }
+
+      for (let selected_item of this.events_selected) {
+        if (!selection.includes(selected_item))
+          // Unselected item
+          this.events_selected = this.events_selected.filter(e => e != selected_item);
+      }
+
+      // Iif there is only one selected item, display its dropup
+      let should_show = item => this.events_selected.length == 1 && item.id == this.events_selected[0];
+
+      for (let item of Object.values(this.timeline.itemSet.items)) {
+        let content = item.dom.content.firstChild;
+
+        content.classList.toggle('item-show-dropup', should_show(item));
+      }
+    };
+
+    this.timeline.on('select', properties => handle_dropups(properties.items));
+
+
     // When a line/dot is clicked, select its associated item
     // Note: this code is hacking into vis-timeline's internals. If more hacks are needed, directly editing the library could be simpler and cleaner
     this.timeline.itemSet.body.emitter.on('_change', ev => {
@@ -120,12 +197,19 @@ class Timeline {
         const clickCallback = ev => {
           let selection = [item.id];
 
-          if (ev.ctrlKey || ev.metaKey || ev.shiftKey)
-            selection = selection.concat(this.timeline.getSelection());
+          if (ev.ctrlKey || ev.metaKey || ev.shiftKey) {
+            let current_selection = this.timeline.getSelection();
+
+            if (current_selection.includes(selection[0]))
+              selection = current_selection.filter(id => id != item.id);
+            else
+              selection = selection.concat(current_selection);
+          }
 
           // TODO: trully support Shift+Click
 
           this.timeline.setSelection(selection);
+          handle_dropups(selection);
         }
 
         if (item.dom && item.dom.dot) item.dom.dot.addEventListener('pointerdown', clickCallback);
@@ -145,27 +229,65 @@ class Timeline {
     main_element.classList.toggle("loading", state);
   }
 
-  add_group(name, data, description) {
+  add_group(metadata, data) {
     let group_id = this.group_counter++;
 
     // Declare the group
     this.groups.add({
       id: group_id,
-      content: name, // + " " + group_id,
       order: group_id,
-      description: description
+
+      // Sort subgroups by lexicographical order
+      subgroupOrder: 'subgroup',
+
+      metadata: metadata
     });
 
     // Add the timestamps
     for (let d of data) {
-      this.items.add({
+      let item_prop = {
         id: this.item_counter++,
-
         group: group_id,
-        subgroup: ['Welcome', 'Problems?', 'Val\u0113te!'].includes(d['title']) ? 'plaintext' : 'maginobion',
+
         content: d['title'],
-        start: vis.moment.unix(d["timestamp"])
-      })
+        information: d["data"],
+
+        information_template: (item, content) => {
+          const text = txt => document.createTextNode(txt);
+          const newline = document.createElement('br');
+
+          let info = item.information;
+
+          if (info.distinguished)
+            content.appendChild(text(`Author: ${info.author} (as a moderator)`));
+          else
+            content.appendChild(text(`Author: ${info.author}`));
+          content.appendChild(newline);
+
+          let link = document.createElement('a');
+          link.href = info.url;
+          link.innerText = "View post";
+          content.appendChild(link);
+        }
+      };
+
+      // Category?
+      if (d['category'])
+        item_prop['subgroup'] = d['category'];
+
+      // Time range
+      if (d["time"] instanceof Array) {
+        let [start, end] = d["time"];
+
+        item_prop["start"] = vis.moment.unix(start);
+        item_prop["end"] = vis.moment.unix(end);
+      }
+      // Timestamp
+      else {
+        item_prop["start"] = vis.moment.unix(d["time"])
+      }
+
+      this.items.add(item_prop);
     }
   }
 }
@@ -254,7 +376,7 @@ class App {
   update_url() {
     let sorted = this.timeline.groups
     .map(group => group, { order: 'order' }) // Sort by field 'order'
-    .map(group => group.content);
+    .map(group => group.metadata.name);
 
     location.hash = sorted.map(encodeURIComponent).join(';');
   }
