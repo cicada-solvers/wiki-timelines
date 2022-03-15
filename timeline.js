@@ -398,7 +398,11 @@ class App {
     setup_control("controls-permalink", ev => {
       navigator.clipboard.writeText(location.href);
 
-      // TODO: "Copied!" message
+      let copied = document.getElementById("permalink-copied");
+      copied.classList.remove('fade-out');
+      setTimeout(() => {
+        copied.classList.add('fade-out');
+      }, 5);
     });
     setup_control("controls-load", async ev => {
       let dataset_name = window.prompt("Dataset name:"); // TODO

@@ -115,6 +115,22 @@ footer {
 #controls > * {
   margin: 5px;
 }
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+#permalink-copied {
+  position: absolute;
+  top: -50px;
+  right: 0px;
+  padding: 20px 65px 20px 50px;
+  color: var(--theme-main-red);
+  font-weight: bold;
+  opacity: 0%;
+}
+#permalink-copied.fade-out {
+  animation: fade-out 5s cubic-bezier(.9,.03,.69,.22) forwards;
+}
 
 .dataset-header {
   position: relative;
