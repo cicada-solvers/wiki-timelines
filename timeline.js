@@ -108,6 +108,9 @@ class Timeline {
         let dropup = document.createElement('div');
         dropup.classList.add('item-dropup');
 
+        let dropup_connector = document.createElement('div');
+        dropup_connector.classList.add('item-dropup-connector');
+
         // "More information" section
         let content = document.createElement('div');
 
@@ -127,7 +130,9 @@ class Timeline {
           // Since it was added earlier, we setup this callback to run during the capture phase.
           e.stopPropagation();
         }, true);
+
         dropup.appendChild(content);
+        dropup.appendChild(dropup_connector);
 
         let element = document.createElement('div');
         element.classList.add('item');
