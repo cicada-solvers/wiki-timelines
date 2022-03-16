@@ -238,8 +238,8 @@ footer {
   display: flex;
   flex-direction: column;
 
-  width: 80%;
-  max-height: 60%;
+  width: 50%;
+  height: 60%;
 
   background-color: var(--theme-gray-dark);
   padding: 20px;
@@ -270,9 +270,12 @@ footer {
 .searchbar-result:hover {
   background-color: var(--theme-gray-darkest);
 }
+.searchbar-result-name {
+  font-size: 1.15em;
+}
 .searchbar-result-description {
   color: var(--theme-gray-light);
-  font-size: small;
+  font-size: 0.85em;
   float: right;
 }
 #searchbar-no-results {

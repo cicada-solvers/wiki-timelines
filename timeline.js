@@ -454,7 +454,7 @@ class App {
     // Populate search results
     let new_result = (name, description) => {
       let name_span = document.createElement("span");
-      name_span.classList.add("searchbar-result-title");
+      name_span.classList.add("searchbar-result-name");
       name_span.innerText = name;
 
       let description_span = document.createElement("span");
