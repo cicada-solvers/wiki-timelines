@@ -385,6 +385,8 @@ class App {
     }
     this.update_url();
 
+    this.init_searchbar();
+
     // Enable timeline
     this.timeline.set_loading(false);
     this.timeline.fit();
@@ -404,16 +406,88 @@ class App {
         copied.classList.add('fade-out');
       }, 5);
     });
-    setup_control("controls-load", async ev => {
-      let dataset_name = window.prompt("Dataset name:"); // TODO
-
-      this.timeline.set_loading(true);
-      await this.load(dataset_name);
-      this.update_url();
-      this.timeline.set_loading(false);
-
-      this.timeline.fit();
+    setup_control("controls-load", ev => {
+      this.display_searchbar();
     });
+  }
+  init_searchbar() {
+    let searchbar = document.getElementById("searchbar");
+    let searchbar_input = document.getElementById("searchbar-input");
+    let searchbar_results = document.getElementById("searchbar-results");
+    let searchbar_no_results = document.getElementById("searchbar-no-results");
+
+    const dismiss_searchbar = () => {
+      searchbar_input.value = '';
+      searchbar.style.display = 'none';
+    };
+
+    // Clicking outside the searchbox dimisses it
+    searchbar.addEventListener("click", ev => {
+      if (ev.target.id != "searchbar")
+        return;
+
+      dismiss_searchbar();
+    });
+    // Handle input inside of the text field
+    searchbar_input.addEventListener("input", ev => {
+      let query = ev.target.value;
+
+      let results_found = 0;
+      for (let result of searchbar_results.children) {
+        if (result.id == "searchbar-no-results") continue;
+
+        let name = result.children[0].innerText;
+        let description = result.children[1].innerText;
+
+        if (name.includes(query) || description.includes(query)) {
+          result.style.display = "";
+          results_found++;
+        }
+        else {
+          result.style.display = "none";
+        }
+      }
+
+      searchbar_no_results.style.display = results_found == 0 ? "" : "none";
+    });
+
+    // Populate search results
+    let new_result = (name, description) => {
+      let name_span = document.createElement("span");
+      name_span.classList.add("searchbar-result-title");
+      name_span.innerText = name;
+
+      let description_span = document.createElement("span");
+      description_span.classList.add("searchbar-result-description");
+      description_span.innerText = description;
+
+      let result = document.createElement("div");
+      result.classList.add("searchbar-result");
+      result.appendChild(name_span);
+      result.appendChild(description_span);
+
+      return result;
+    };
+
+    this.data_source.datasets.forEach(dataset => {
+      let result = new_result(dataset['name'], dataset['description']);
+
+      result.addEventListener('click', async ev => {
+        dismiss_searchbar();
+
+        await this.load(dataset['name']);
+        this.timeline.fit();
+      });
+
+      searchbar_results.appendChild(result);
+    });
+
+    // Initially, "No results" should be hidden
+    searchbar_no_results.style.display = "none";
+  }
+  display_searchbar() {
+    let searchbar = document.getElementById("searchbar");
+    searchbar.style.display = '';
   }
 
   // Load new dataset
