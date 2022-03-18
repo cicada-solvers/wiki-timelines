@@ -476,6 +476,7 @@ class App {
         dismiss_searchbar();
 
         await this.load(dataset['name']);
+        this.update_url();
         this.timeline.fit();
       });
 
