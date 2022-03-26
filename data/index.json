@@ -4,5 +4,11 @@
     "filename": "a2e7j6ic78h0j_posts.json",
     "templating_script": "templates/a2e7j6ic78h0j_posts.mjs",
     "description": "All posts made by 3301 on their subreddit, r/a2e7j6ic78h0j, for the 2012 Cicada puzzle."
+  },
+  {
+    "name": "2012 PGP-signed messages",
+    "filename": "2012_PGP_messages.json",
+    "templating_script": "templates/2012_PGP_messages.mjs",
+    "description": "All known PGP-signed messages created by 3301 in 2012"
   }
 ]
