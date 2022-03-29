@@ -32,14 +32,16 @@ class DataSource {
       }
     };
 
-    try {
-      let imported_templates = await import('./data/' + dataset.templating_script);
+    if (dataset.templating_script !== undefined) {
+      try {
+        let imported_templates = await import('./data/' + dataset.templating_script);
 
-      if ('title' in imported_templates)
-        templates['title'] = imported_templates['title'];
-      if ('more_information' in imported_templates)
-        templates['more_information'] = imported_templates['more_information'];
-    } catch (e) {}
+        if ('title' in imported_templates)
+          templates['title'] = imported_templates['title'];
+        if ('more_information' in imported_templates)
+          templates['more_information'] = imported_templates['more_information'];
+      } catch (e) {}
+    }
 
     timeline.add_group({
       name: dataset.name,
