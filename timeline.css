@@ -229,7 +229,7 @@ footer {
   bottom: 0;
   width: 100%;
 
-  z-index: 1;
+  z-index: 2;
 
   background-image: linear-gradient(rgba(0, 0, 0, 0.8) 0 0);
   cursor: pointer;
@@ -303,18 +303,29 @@ button:active {
 
 .vis-item {
   /* Display items over lines */
-  z-index: 0;
+  z-index: 1;
 
   border-color: var(--theme-dark-blue);
   background-color: var(--theme-main-blue);
-
-/* Gray theme:
-  border-color: rgb(55, 55, 55);
-  background-color: rgb(88, 88, 88); */
 }
 .vis-item.vis-selected {
   border-color: var(--theme-dark-orange) !important;
   background-color: var(--theme-main-orange);
+}
+.vis-item[data-options="approximate"] {
+  background-color: transparent !important;
+
+/*  border-image: linear-gradient(to left, rgb(0, 0, 0, 0) 0%, var(--theme-dark-blue) 10%, var(--theme-dark-blue) 90%, rgb(0, 0, 0, 0) 100%) 0 0 100% 0/0 0 3px 0 stretch; */
+  border-image-source: linear-gradient(to left, transparent 0%, var(--theme-main-blue) 10%, var(--theme-main-blue) 90%, transparent 100%);
+  border-image-slice: 0 0 100% 0;
+  border-image-width: 0 0 3px 0;
+  border-image-outset: 0 15 0 10;
+
+  z-index: 0;
+}
+.vis-item.vis-selected[data-options="approximate"] {
+/*  border-image: linear-gradient(to left, rgb(0, 0, 0, 0) 0%, var(--theme-dark-orange) 10%, var(--theme-dark-orange) 90%, rgb(0, 0, 0, 0) 100%) 0 0 100% 0/0 0 3px 0 stretch;*/
+  border-image-source: linear-gradient(to left, rgb(0, 0, 0, 0) 0%, var(--theme-main-orange) 10%, var(--theme-main-orange) 90%, rgb(0, 0, 0, 0) 100%);
 }
 .vis-item.vis-dot, .vis-item.vis-line {
   /* Display lines behind items & selected lines */

@@ -202,6 +202,27 @@ class Timeline {
         let title = dataset_templates.title(original_event, element);
         apply_template(title, element);
 
+        // Callback triggered when 'element' is added to the DOM.
+        // This is quite an ugly hack.
+        const on_dom_insertion = function() {
+          if (item["approximate_time"])
+            element.parentElement?.parentElement?.parentElement?.setAttribute("data-options", "approximate");
+        };
+
+        let observer = new MutationObserver(mutations => {
+          for (let mutation of mutations) {
+            for (let added_node of mutation.addedNodes) {
+              if (added_node !== element)
+                continue;
+
+              on_dom_insertion();
+              observer.disconnect();
+              return;
+            }
+          }
+        });
+        observer.observe(document, { childList: true, subtree: true });
+
         return element;
       },
 
@@ -322,19 +343,38 @@ class Timeline {
       };
 
       // Category?
-      if (d['category'])
-        item_prop['subgroup'] = d['category'];
+      item_prop['subgroup'] = d['category'] || "default";
 
-      // Time range
+      // Time range - shorthand value
       if (d["time"] instanceof Array) {
         let [start, end] = d["time"];
 
         item_prop["start"] = vis.moment.unix(start);
         item_prop["end"] = vis.moment.unix(end);
       }
-      // Timestamp
-      else {
-        item_prop["start"] = vis.moment.unix(d["time"])
+      // Time range - { type: 'range', range: [start, end] }
+      else if (d["time"].constructor === Object && d["time"].type == "range") {
+        let [start, end] = d["time"].range;
+
+        item_prop["start"] = vis.moment.unix(start);
+        item_prop["end"] = vis.moment.unix(end);
+      }
+      // Timestamp - shorthand value
+      else if (typeof d["time"] === 'number') {
+        item_prop["start"] = vis.moment.unix(d["time"]);
+      }
+      // Timestamp - { type: 'timestamp', 'timestamp': value }
+      else if (d["time"].constructor === Object && d["time"].type == "timestamp") {
+        item_prop["start"] = vis.moment.unix(d["time"].timestamp);
+      }
+      // Approximate time - { type: 'approximate', range: [start, end] }
+      else if (d["time"].constructor === Object && d["time"].type == "approximate") {
+        let [start, end] = d["time"].range;
+
+        item_prop["start"] = vis.moment.unix(start);
+        item_prop["end"] = vis.moment.unix(end);
+
+        item_prop["approximate_time"] = true;
       }
 
       this.items.add(item_prop);
