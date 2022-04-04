@@ -8,9 +8,10 @@ Example permalinks:
 * https://cicada-solvers.github.io/wiki-timelines/#r%2Fa2e7j6ic78h0j%20posts;r%2Fa2e7j6ic78h0j%20posts
 
 ## Datasets available
-| Name                  | Description                                                                             |
-|-----------------------|-----------------------------------------------------------------------------------------|
-| r/a2e7j6ic78h0j posts | All posts made by 3301 on their subreddit, r/a2e7j6ic78h0j, for the 2012 Cicada puzzle. |
+| Name                     | Description                                                                             |
+|--------------------------|-----------------------------------------------------------------------------------------|
+| r/a2e7j6ic78h0j posts    | All posts made by 3301 on their subreddit, r/a2e7j6ic78h0j, for the 2012 Cicada puzzle. |
+| 2012 PGP-signed messages | All known PGP-signed messages created by 3301 in 2012                                   |
 
 The data format is documented [here](data/format.md).
 
