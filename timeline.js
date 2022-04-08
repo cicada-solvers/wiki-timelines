@@ -40,7 +40,9 @@ class DataSource {
           templates['title'] = imported_templates['title'];
         if ('more_information' in imported_templates)
           templates['more_information'] = imported_templates['more_information'];
-      } catch (e) {}
+      } catch (e) {
+        console.error(`Error while loading templating script '${dataset.templating_script}':`, e);
+      }
     }
 
     timeline.add_group({
