@@ -14,7 +14,7 @@ class DataSource {
     });
   }
 
-  async load(dataset_name) {
+  async load(dataset_name, position) {
     let dataset = this.datasets.get(dataset_name);
 
     if (!dataset) return;
@@ -49,7 +49,7 @@ class DataSource {
       name: dataset.name,
       description: dataset.description,
       templates: templates
-    }, data);
+    }, data, position);
   }
 }
 
@@ -62,6 +62,7 @@ class Timeline {
 
     this.item_counter = 1;
     this.group_counter = 1;
+    this.next_position = 1;
 
     this.loading = false;
 
@@ -320,13 +321,18 @@ class Timeline {
     main_element.classList.toggle("loading", state);
   }
 
-  add_group(metadata, data) {
+  add_group(metadata, data, position) {
     let group_id = this.group_counter++;
+
+    if (position !== undefined)
+      this.next_position = Math.max(position, this.next_position) + 1;
+    else
+      position = this.next_position++;
 
     // Declare the group
     this.groups.add({
       id: group_id,
-      order: group_id,
+      order: position,
 
       // Sort subgroups by lexicographical order
       subgroupOrder: 'subgroup',
@@ -536,9 +542,12 @@ class App {
       } catch (e) {}
 
     let promises = [];
-    for (let name of to_load) {
-      let load_promise = this.data_source.load(name);
 
+    let position = 1;
+    for (let name of to_load) {
+      let load_promise = this.data_source.load(name, position);
+
+      position++;
       promises.push(load_promise);
     }
 
