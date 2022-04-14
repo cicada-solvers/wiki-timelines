@@ -199,11 +199,16 @@ class Timeline {
 
         let element = document.createElement('div');
         element.classList.add('event');
-        element.appendChild(dropup);
+
+        let element_content = document.createElement('div');
+        element_content.classList.add('event-content');
 
         // Generate title using template
         let title = dataset_templates.title(original_event, element);
-        apply_template(title, element);
+        apply_template(title, element_content);
+
+        element.appendChild(dropup);
+        element.appendChild(element_content);
 
         // Callback triggered when 'element' is added to the DOM.
         // This is quite an ugly hack.
