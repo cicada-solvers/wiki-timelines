@@ -10,5 +10,11 @@
     "filename": "2012_PGP_messages.json",
     "templating_script": "templates/2012_PGP_messages.mjs",
     "description": "All known PGP-signed messages created by 3301 in 2012"
+  },
+  {
+    "name": "2012 events",
+    "filename": "2012_events.json",
+    "templating_script": "templates/2012_events.mjs",
+    "description": "Various events related to the 2012 Puzzle. PGP-signed messages can be found in a separate dataset."
   }
 ]

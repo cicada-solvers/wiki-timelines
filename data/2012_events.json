@@ -1,0 +1,136 @@
+[
+  {
+    "title": "Original 4chan thread",
+    "time": { "type": "approximate", "range": [ 1325709000, 1325712250 ] },
+    "category": "4chan thread",
+    "data": {
+      "description": "The original 4chan thread was posted by 3301 to the /x/ board. No archive of it is known."
+    }
+  },
+  {
+    "title": "/b/ thread",
+    "time": 1325712495,
+    "category": "4chan thread",
+    "data": {
+      "description": "A 4chan thread posted not long after the original /x/ thread",
+      "url": "https://imgur.com/ke78n"
+    }
+  },
+  {
+    "title": "/sci/ thread",
+    "time": 1325720109,
+    "category": "4chan thread",
+    "data": {
+      "description": "A /sci/ thread reposting final.jpg",
+      "url": "https://warosu.org/sci/thread/4217623"
+    }
+  },
+  {
+    "title": "Decoy image uploaded",
+    "time": 1325708893,
+    "data": {
+      "description": "Duck decoy image uploaded to Imgur by 3301",
+      "url": "https://imgur.com/m9sYK"
+    }
+  },
+  {
+    "title": "r/a2e7j6ic78h0j created",
+    "time": 1325698228,
+    "category": "reddit",
+    "data": {
+      "description": "r/a2e7j6ic78h0j is the subreddit 3301 created for the 2012 puzzle",
+      "url": "https://old.reddit.com/r/a2e7j6ic78h0j/"
+    }
+  },
+  {
+    "title": "u/CageThrottleUs joined",
+    "time": 1325696909,
+    "category": "reddit",
+    "data": {
+      "description": "u/CageThrottleUs is a Reddit account used by 3301 to post most messages on their subreddit",
+      "url": "https://old.reddit.com/user/CageThrottleUs"
+    }
+  },
+  {
+    "title": "u/ImagoOnNib joined",
+    "time": 1325843807,
+    "category": "reddit",
+    "data": {
+      "description": "u/ImageOnNib is a Reddit account used by 3301 to make the 'Problems?' post on their subreddit",
+      "url": "https://old.reddit.com/user/ImageOnNib"
+    }
+  },
+  {
+    "title": "r/a2e7j6ic78h0j banner uploaded",
+    "time": 1325758789,
+    "category": "reddit",
+    "data": {
+      "description": "r/a2e7j6ic78h0j's banner depicts mayan numerals and was used during the 2012 puzzle.",
+      "note": "this date was gathered from the 'Last-Modified' header sent by Reddit, it may be inaccurate.",
+      "url": "https://c.thumbs.redditmedia.com/UMa-nedknxEIvArh.png"
+    }
+  },
+  {
+    "title": "PGP key created",
+    "time": 1325732954,
+    "data": {
+      "description": "The public key's creation time",
+      "url": "https://pgp.mit.edu/pks/lookup?op=get&search=0x9797C7ED26AB20B7"
+    }
+  },
+  {
+    "title": "845145127.com - Coordinates",
+    "time": 1326128400,
+    "data": {
+      "description": "On this date, the countdown of 845145127.com finished and instead displayed 'Reload this page.'"
+    }
+  },
+  {
+    "title": "RSA submissions working",
+    "time": 1326768540,
+    "data": {
+      "description": "Submitting answers for the RSA puzzle initially resulted in a 500 error, but on this date 3301 fixed the issue.",
+      "note": "this date is user-reported, so it may be inaccurate."
+    }
+  },
+  {
+    "title": "2012 Leaked email",
+    "time": 1328582276,
+    "data": {
+      "description": "What is commonly known as the 'Leaked Email' is an email sent to winners of the 2012 puzzle, which got leaked on pastebin. The leaked version had its PGP signature stripped, but 3301 send nearly the exact same message in 2013, which got leaked again with the full signature.",
+      "url": "https://pastebin.com/RmqxWcnB"
+    }
+  },
+  {
+    "title": "End of puzzle email",
+    "time": { "type": "approximate", "range": [1328454000, 1328572800] },
+    "data": {
+      "description": "Around February 6th, 3301 sent an email informing winners that there would be no more puzzles.",
+      "note": "this very approximate"
+    }
+  },
+  {
+    "title": "The second chance book code hint",
+    "time": 1326266418,
+    "data": {
+      "description": "Using this image, 3301 hinted solvers to use 'The Marriage of Heaven and Hell' to solve the 'second chance' book code.",
+      "url": "https://imgur.com/hkdgl"
+    }
+  },
+  {
+    "title": "'The Lady of Shallott' image",
+    "time": 1326266886,
+    "data": {
+      "description": "Outguessed in this image was the book code for the second chance.",
+      "url": "https://imgur.com/NHYLD"
+    }
+  },
+  {
+    "title": "MIDI file creation - 1",
+    "time": 1327031859,
+    "data": {
+      "description": "Inside the MIDI files released by 3301 a timestamp creation can be found.",
+      "url": "https://github.com/ctvrty-rozmer/bruh/blob/master/song.mid"
+    }
+  }
+]
