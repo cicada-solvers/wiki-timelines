@@ -42,6 +42,10 @@ a {
    color: var(--link-color);
 }
 
+i {
+  font-style: italic;
+}
+
 main {
   position: relative;
   height: calc(100% - var(--footer-height));
@@ -185,6 +189,13 @@ footer {
   transform: rotate(-45deg);
 }
 
+
+.vis-selected[data-options="approximate"] .event {
+  background-color: rgba(28, 28, 28, 0.6);
+
+  padding-bottom: 3px;
+  margin-bottom: -3px;
+}
 .event-dropup {
   position: relative;
 }
@@ -210,12 +221,20 @@ footer {
   border: solid var(--theme-gray-lightest) 1.5px;
 
   pointer-events: auto;
+
+  width: max-content;
+  max-width: 400px;
+  white-space: break-spaces;
 }
 .event-dropup-connector {
   width: 0px;
   height: 35px;
 
   border-left: solid var(--theme-dark-orange) 1px;
+}
+
+.vis-selected .vis-item-overflow {
+  overflow: visible;
 }
 
 #searchbar {
@@ -229,7 +248,7 @@ footer {
   bottom: 0;
   width: 100%;
 
-  z-index: 2;
+  z-index: 3;
 
   background-image: linear-gradient(rgba(0, 0, 0, 0.8) 0 0);
   cursor: pointer;
@@ -326,6 +345,8 @@ button:active {
 .vis-item.vis-selected[data-options="approximate"] {
 /*  border-image: linear-gradient(to left, rgb(0, 0, 0, 0) 0%, var(--theme-dark-orange) 10%, var(--theme-dark-orange) 90%, rgb(0, 0, 0, 0) 100%) 0 0 100% 0/0 0 3px 0 stretch;*/
   border-image-source: linear-gradient(to left, rgb(0, 0, 0, 0) 0%, var(--theme-main-orange) 10%, var(--theme-main-orange) 90%, rgb(0, 0, 0, 0) 100%);
+
+  z-index: 2;
 }
 .vis-item.vis-dot, .vis-item.vis-line {
   /* Display lines behind items & selected lines */
