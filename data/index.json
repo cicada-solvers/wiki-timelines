@@ -16,5 +16,11 @@
     "filename": "2012_events.json",
     "templating_script": "templates/2012_events.mjs",
     "description": "Various events related to the 2012 Puzzle. PGP-signed messages can be found in a separate dataset."
+  },
+  {
+    "name": "@1231507051321",
+    "filename": "twitter.json",
+    "templating_script": "templates/twitter.mjs",
+    "description": "All activity of 3301's twitter account."
   }
 ]
