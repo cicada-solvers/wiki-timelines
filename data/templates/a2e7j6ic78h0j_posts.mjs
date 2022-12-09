@@ -1,3 +1,11 @@
+export function title(event, element) {
+  let displayed_title = event.title;
+  if (event.category == "deleted")
+    displayed_title = "[deleted] " + displayed_title;
+
+  return displayed_title;
+}
+
 export function more_information(event, content) {
   const text = txt => document.createTextNode(txt);
   const newline = document.createElement('br');
